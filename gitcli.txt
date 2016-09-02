@@ -2,3 +2,58 @@
 2.github 提交修改时候，需要使用SSH公钥认证，可使用命令：
 ssh-keygen -t rsa -b 4096 -C "whxiang@vip.qq.com"
 生成，在提示处输入文件保存路径；到目的路径打开PUB格式文件，拷贝文件内容到github中，Add a new ssh key即可。
+3.从dev分支往master分支合并：
+一般情况约定开发文件都在dev分支上提交，master只作为同步远程库使用。在dev分支add修改，commit提交版本库，再往master分支合并：
+git merge --no-ff -m "merge from dev" 目标文件路径
+4.git命令配置别名，主要映射git命令的参数部分，配置方式如下：
+git config --global alias.unstage 'reset HEAD'
+git config --global alias.co checkout
+git config --global alias.ci commit
+git config --global alias.br branch
+git config --global alias.last 'log -1' //显示最近一次提交
+4.忽略特殊文件：经常有些数据库配置等比较敏感的文件或临时的一些无用文件无需放入git版本控制中，
+使用git status时候 不想看到一堆untracked file的提示，可采用git提供的一种机制忽略这些文件。
+在GIT工作目录中添加.gitignore文件
+编辑.gitignore文件格式如下,
+# Python:
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
+将保存的.gitignore文件也提交GIT就完成了！有些文件加入.gitignore文件中又想提交可以使用
+git add -f App.class  使用-f参数强制提交；
+5.标签管理，常用在版本发布中，基于某个COMMIT打个标签，
+使用git tag v1.0即可打入标签 基于最近一次COMMIT
+git tag 可查看所有标签
+想基于指定COMMIT打标签，可先使用git log --pretty=oneline --abbrev-commit 查看具体commit id号；
+再使用命令git tag v0.9 6224937打标签；
+还可以创建带有说明的标签，用-a指定标签名，-m指定说明文字：git tag -a v0.1 -m "version 0.1 released" 3628164
+用命令git show <tagname>可以看到说明文字：git show v0.1
+
+6.查看当前工作目录对应的远程库信息：git remote -v
+推送指定分支所有修改到远程库：git push origin master
+如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream branch-name origin/branch-name。
+
+7.分支管理：
+每次提交，Git都把它们串成一条时间线，这条时间线就是一个分支。截止到目前，只有一条时间线，在Git里，这个分支叫主分支，即master分支。HEAD严格来说不是指向提交，而是指向master，master才是指向提交的，所以，HEAD指向的就是当前分支；
+当我们创建新的分支，例如dev时，Git新建了一个指针叫dev，指向master相同的提交，再把HEAD指向dev，就表示当前分支在dev上：
+Git创建一个分支很快，因为除了增加一个dev指针，改改HEAD的指向，工作区的文件都没有任何变化！
+
+git branch dev 创建dev分支
+git checkout dev 切换到dev分支
+可使用git checkout -b dev直接创建dev分支并切换过去;
+删除分支：git branch -d <name>
+
+8.GIT版本提交的一个过程：
+工作区->stash暂存区->分支版本库
+
+9.版本回退部分：
+Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交3628164...882e1e0（注意我的提交ID和你的肯定不一样），上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100
+当修改已经commit版本库，可以使用git reset --hard HEAD^
+使用git reflog 或者 git log命令查看每次提交的commit ID ,使用特定commit ID回退版本：git reset --hard 3628164
+撤销未提交暂存区的修改即只是工作区的修改可直接使用 git checkout --filename
+撤销暂存区的修改可使用：用命令git reset HEAD file可以把暂存区的修改撤销掉（unstage），重新放回工作区 即没有加--hard参数；
+
+10.创建版本库：新建或在已有的目录中使用git init命令把这个目录变成Git可以管理的仓库，当前目录下多了一个.git的目录，这个目录是Git来跟踪管理版本库的，没事千万不要手动修改这个目录里面的文件，不然改乱了，就把Git仓库给破坏了。
