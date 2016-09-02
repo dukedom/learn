@@ -1,0 +1,4 @@
+1.git clone https://github.com/dukedom/learn.git 克隆一个版本库到本地；
+2.github 提交修改时候，需要使用SSH公钥认证，可使用命令：
+ssh-keygen -t rsa -b 4096 -C "whxiang@vip.qq.com"
+生成，在提示处输入文件保存路径；到目的路径打开PUB格式文件，拷贝文件内容到github中，Add a new ssh key即可。
